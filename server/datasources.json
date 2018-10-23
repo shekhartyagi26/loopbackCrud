@@ -1,0 +1,11 @@
+{
+    "mongoDS":{
+        "database":"mydb",
+        "name":"",
+        "password":"",
+        "username":"",
+        "host":"localhost",
+        "port":27017,
+        "connector": "mongodb"
+    }
+}
