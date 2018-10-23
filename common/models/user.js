@@ -15,7 +15,7 @@ module.exports = (User) => {
           let { status, id } = user;
           if (status == "ACTIVE"){
               if(password == user.password)
-                cb(null, "You have successfully login.")
+                cb(null, user)
               else
                 cb(null, "You have entered invalid password.")          
           } 
@@ -38,7 +38,7 @@ module.exports = (User) => {
     let login = { 
       http: { path: '/login', verb: "post" },
       accepts: { arg: 'data', type: "object", http: { source: "body" } },
-      returns: { arg:"message", type:"string" }
+      returns: { arg:"data", type:"object" }
     }
 
   User.remoteMethod('login', login)
@@ -49,13 +49,22 @@ module.exports = (User) => {
 
   // 2nd API for Singup User 
   User.signup = (userData, cb) => {
-    
-    new User(userData).save((err, result) => {
+    let query = { where: { "email": userData.email },  }
+    User.findOne(query, (err, result) => {
       if (err)
         cb(err)
+      else if (!result) {
+        new User(userData).save((err, result) => {
+          if (err)
+            cb(err)
+          else
+            cb(null, result)
+        })
+      } 
       else
-        cb(null, result)
+        cb(null, "Email id already exits.")
     })
+   
   }
   let signup = { 
       http: { path: '/signup', verb: "post" },
