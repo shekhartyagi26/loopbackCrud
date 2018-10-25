@@ -9,11 +9,10 @@ module.exports = (User) => {
 
   // 1st API for Signup
   User.signup = (userData, cb)=>{
-    var user = new User(userData);
-        user
-        .save()
-        .then(user=> cb(null, user))
-        .catch(err=> cb(err))
+    new User(userData)
+    .save()
+    .then(user=> cb(null, user))
+    .catch(err=> cb(err))
 
   }
 

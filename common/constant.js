@@ -28,8 +28,5 @@ module.exports = {
     SEND_OTP,
     PASSWORD_CHANGE,
     BLANK,
-    NOT_OBJECT,
-    ERROR:(msg, cb)=>{
-        cb({ message:msg })
-    }
+    NOT_OBJECT
 }
