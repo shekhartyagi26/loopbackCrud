@@ -210,7 +210,6 @@ module.exports = (User) => {
 
 
   // 9th API for Login
-
   User.login = (userData, cb)=>{
     let { password, email } = userData;
     let query = { where:{ email:email } }
