@@ -31,9 +31,7 @@ module.exports = {
     validation:(object)=>{
         for(var key in object)
             if(!object[key])
-                return {
-                    message:`${key} can't be blank.`
-                }
+                return `${key} can't be blank.`;
     },
 
     router:(path, verb, arg)=>{
