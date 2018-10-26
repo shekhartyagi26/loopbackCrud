@@ -1,9 +1,7 @@
 'use strict';
 // PersistedModel
-const COMMON = require('../common')
-const CONSTANT = require('../constant')
-const USER_ROUTES = require('../routes/userRoutes')
-const VALIDATOR = require('../validations')
+const common = require('../common');
+const constant = require('../constant');
 
 module.exports = (User) => {
 
@@ -12,111 +10,105 @@ module.exports = (User) => {
     new User(userData)
     .save()
     .then(user=> cb(null, user))
-    .catch(err=> cb(err))
+    .catch(err=> cb(err));
   }
 
-  User.remoteMethod('signup', USER_ROUTES.SIGNUP)  
+  User.remoteMethod('signup', common.router('/signup', 'post', 'data'));  
 
   // 2rd API for send OTP
   User.sendOTP = (email, cb) => {
-        var options = { OTP: CONSTANT.OTP }
-        var query = { where: { "email": email } }
+        let options = { OTP: constant.OTP };
+        let query = { where: { "email": email } };
         User.findOne(query).then(user=> {
           if (user) {
             User.update({ _id:user.id } , options, (err, user) => {
               if (err)
-                cb(err)
+                cb(err);
               else
-                cb(null, CONSTANT.SEND_OTP)
+                cb(null, constant.SEND_OTP);
             })
           } 
           else
-            cb(CONSTANT.USER_ID_NOT_FOUND, null)
+            cb(constant.EMAIL_ID_NOT_FOUND, null);
         })
-        .catch(err=> cb(err))
+        .catch(err=> cb(err));
   }
  
-  User.remoteMethod('sendOTP', USER_ROUTES.SEND_OTP)
-
+  User.remoteMethod('sendOTP', common.router('/sendOTP', 'get', 'email'));
   User.beforeRemote('sendOTP', (context, user, next)=>{
-    var email = context.req.body;
-    VALIDATOR.SEND_OTP(email, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next()
-    })
+    let { email } = context.req.query;
+    let err = common.validation({ email });
+    if(err)
+      next(err);
+    else
+      next();
   })
-
 
   // 3th API for Verify OTP
   User.verifyOTP = (userData, cb) => {
-        var { email, OTP } = userData
-        var query = { where: { email: email } }
-        var options = { status: "ACTIVE" }
-        User.findOne(query)
-        .then(user => {
-          if (user) {
-            if (user.OTP == userData.OTP) {
-              User.update({_id:user.id}, options, (err, user) => {
-                if (err)
-                  cb(err)
-                else
-                  cb(null, CONSTANT.SUCCESSFULLY_LOGIN)
-              })
-            } 
+    let { email, OTP } = userData
+    let query = { where: { email: email } }
+    let options = { status: "ACTIVE" }
+    User.findOne(query)
+    .then(user => {
+      if (user) {
+        if (user.OTP == userData.OTP) {
+          User.update({_id:user.id}, options, (err, user) => {
+            if (err)
+              cb(err);
             else
-              cb(CONSTANT.INVALID_OTP ,null)
-          } 
-          else
-            cb(CONSTANT.EMAIL_ID_NOT_FOUND, null)
-        })
-        .catch(err=> cb(err))
+              cb(null, constant.SUCCESSFULLY_LOGIN);
+          })
+        } 
+        else
+          cb(constant.INVALID_OTP ,null);
+      } 
+      else
+        cb(constant.EMAIL_ID_NOT_FOUND, null);
+    })
+    .catch(err=> cb(err));
     
   }
   
-  User.remoteMethod('verifyOTP', USER_ROUTES.VERIFY_OTP)
+  User.remoteMethod('verifyOTP',  common.router('/verifyOTP', 'post', 'data'))
   User.beforeRemote('verifyOTP', (context, user, next)=>{
-    var userData = context.req.body;
-    VALIDATOR.VERIFY_OTP(userData, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next()
-    })
+    let { email, OTP } = context.req.body;
+    let err = common.validation({ email, OTP })
+    if(err)
+      next(err);
+    else
+      next();
   })
 
 
   // 4th API for User Detail
   User.getUser = function(id, cb){
-        var query = {  
-          where:{ _id:id },
-          fields: { id: true, email: true, name: true } 
-        }
-        User.findOne(query).then(user => {
-          if (user)
-            cb(null, user) 
-          else
-            cb(CONSTANT.USER_ID_NOT_FOUND, null)
-        })
-        .catch(err=> cb(err))
+    let query = {  
+      where:{ _id:id },
+      fields: { id: true, email: true, name: true } 
+    }
+    User.findOne(query).then(user => {
+      if (user)
+        cb(null, user);
+      else
+        cb(constant.USER_ID_NOT_FOUND, null);
+    })
+    .catch(err=> cb(err));
   }
 
-  User.remoteMethod('getUser', USER_ROUTES.GET_USER)
+  User.remoteMethod('getUser',  common.router('/getUser', 'get', 'id'))
   User.beforeRemote('getUser', (context, user, next)=>{
-    var id = context.req.query.id;;
-    VALIDATOR.GET_OR_DELETE_USER(id, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next()
-    })
+    let { id } = context.req.query;
+    let err = common.validation({ id })
+    if(err)
+      next(err);
+    else
+      next();
   })
 
 
   // 5th API for get ALl User list
   User.getAllUser = function(id, cb){
-
     let query = {  
       where:{ status:"ACTIVE" },
       fields: { id: true, email: true, name: true } 
@@ -125,149 +117,144 @@ module.exports = (User) => {
       if (users)
         cb(null, users) 
       else
-        cb(CONSTANT.USER_ID_NOT_FOUND, null)
+        cb(constant.USER_ID_NOT_FOUND, null)
     })
     .catch(err=> cb(err))
   }
 
-  User.remoteMethod('getAllUser', USER_ROUTES.GET_ALL_USER)
+  User.remoteMethod('getAllUser', common.router('/getAllUser', 'post', 'data'))
 
   //6th API for Detete User
   User.deleteUser = (id, cb) => {
-        var query = { _id:id }
-        var options = { status:"DELETED" }
-        User.update(query, options).then(user=> {
-          if(user.count == 0)
-            cb(CONSTANT.USER_ID_NOT_FOUND, null)
-          else
-            cb(null, CONSTANT.DELETE_USER)
-        })
-        .catch(err=> cb(err))
+    let query = { _id:id }
+    let options = { status:"DELETED" }
+    User.update(query, options).then(user=> {
+      if(user.count == 0)
+        cb(constant.USER_ID_NOT_FOUND, null)
+      else
+        cb(null, constant.DELETE_USER)
+    })
+    .catch(err=> cb(err))
   }
   
-  User.remoteMethod('deleteUser', USER_ROUTES.DELETE_USER)
+  User.remoteMethod('deleteUser', common.router('/deleteUser', 'get', 'id'))
   User.beforeRemote('deleteUser', (context, user, next)=>{
-    var id = context.req.query.id;
-    VALIDATOR.GET_OR_DELETE_USER(id, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next()
-    })
+    let { id } = context.req.query;
+    let err = common.validation({ id })
+    if(err)
+      next(err);
+    else
+      next();
   })
 
 
   // 7th API for edit User Profile
   User.editUser = (userData, cb) => {
-
-        var query = { _id:userData.id }
-        var options = { name:userData.name }
-        User.update(query , options).then(user => {
-          if(user.count == 0)
-            cb(CONSTANT.USER_ID_NOT_FOUND)
-          else
-            cb(null, CONSTANT.PROFILE_UPDATE)
-        })
-        .catch(err=> cb(err))
+    let query = { _id:userData.id }
+    let options = { name:userData.name }
+    User.update(query , options).then(user => {
+      if(user.count == 0)
+        cb(constant.USER_ID_NOT_FOUND)
+      else
+        cb(null, constant.PROFILE_UPDATE)
+    })
+    .catch(err=> cb(err))
   }
   
-  User.remoteMethod('editUser', USER_ROUTES.EDIT_USER)
+  User.remoteMethod('editUser', common.router('/editUser', 'post', 'data'))
   User.beforeRemote('editUser', (context, user, next)=>{
-    var userData = context.req.body;
-    VALIDATOR.EDIT_USER(userData, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next()
-    })
+    let { id, name } = context.req.body;
+    let err = common.validation({ id, name })
+    if(err)
+      next(err)
+    else
+      next()
   })
 
 
   // 8th API for resetPassword Password
   User.resetPassword = (userData, cb) => {
-      var { password, newPassword, email } = userData;
-      var query = { where:{ email:email } }
-      User.findOne(query).then(user => {
-        if (user){
-          COMMON.hashCompare(password, user.password, (err, match)=>{
-            if(err)
-              cb(err)
-            else if(!match)
-              cb(CONSTANT.PASSWORD_NOT_MATCH, null)
-            else
-              COMMON.createHash(newPassword, (err, hash)=>{
-                if(err)
-                  cb(err)
-                else
-                  var options = { password:hash }
-                  User.update({ _id:user.id }, options, (err, user) => {
-                    if (err)
-                      cb(err)
-                    else
-                      cb(null, CONSTANT.PASSWORD_CHANGE)
-                  })  
-              })
-          })
-        } 
-        else
-          cb(CONSTANT.EMAIL_ID_NOT_FOUND, null)
-      })
-      .catch(err=> cb(err))
+    let { password, newPassword, email } = userData;
+    let query = { where:{ email:email } }
+    User.findOne(query).then(user => {
+      if (user){
+        common.hashCompare(password, user.password, (err, match)=>{
+          if(err)
+            cb(err)
+          else if(!match)
+            cb(constant.PASSWORD_NOT_MATCH, null)
+          else
+            common.createHash(newPassword, (err, hash)=>{
+              if(err)
+                cb(err)
+              else{
+                let options = { password:hash }
+                User.update({ _id:user.id }, options, (err, user) => {
+                  if (err)
+                    cb(err)
+                  else
+                    cb(null, constant.PASSWORD_CHANGE)
+                })
+              }  
+            })
+        })
+      } 
+      else
+        cb(constant.EMAIL_ID_NOT_FOUND, null)
+    })
+    .catch(err=> cb(err))
   }
 
-  User.remoteMethod('resetPassword', USER_ROUTES.RESET_PASSWORD)
+  User.remoteMethod('resetPassword', common.router('/resetPassword', 'post', 'data'))
   User.beforeRemote('resetPassword', (context, user, next)=>{
-    var userData = context.req.body;
-    VALIDATOR.RESET_PASSWORD(userData, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next()
-    })
+    let { email, password, newPassword } = context.req.body;
+    let err = common.validation({ email, password, newPassword })
+    if(err)
+      next(err)
+    else
+      next()
   })
 
 
   // 9th API for Login
-  User.login = (userData, cb)=>{
-    
-      var { password, email } = userData;
-      var query = { where:{ email:email } }
-      User.findOne(query)
-      .then(user=>{
-        if(user){
-          if(user.status != "ACTIVE"){
-            var query1 = { _id:user.id }
-            var options = { OTP:CONSTANT.OTP }
-            User.update(query1, options)
-            .then(update=> cb(null, CONSTANT.SEND_OTP))
-            .catch(err=> cb(err))
-          } 
-          else{
-            COMMON.hashCompare(password, user.password, (err, match)=>{
-              if(err)
-                cb(err)
-              else if(match)
-                cb(null, CONSTANT.SUCCESSFULLY_LOGIN)
-              else
-                cb(CONSTANT.INVALID_CREDENTIALS, null)
-            });
-          }
+  User.login = (userData, cb)=>{ 
+    let { password, email } = userData;
+    let query = { where:{ email:email } };
+    User.findOne(query)
+    .then(user=>{
+      if(user){
+        if(user.status != "ACTIVE"){
+          let query = { _id:user.id };
+          let options = { OTP:constant.OTP };
+          User.update(query, options)
+          .then(update=> cb(null, constant.SEND_OTP))
+          .catch(err=> cb(err));
+        } 
+        else{
+          common.hashCompare(password, user.password, (err, match)=>{
+            if(err)
+              cb(err);
+            else if(match)
+              cb(null, user);
+            else
+              cb(constant.INVALID_CREDENTIALS);
+          });
         }
-        else
-          cb(CONSTANT.INVALID_CREDENTIALS, null)
-      })
-      .catch(err=> cb(err))
+      }
+      else
+        cb(constant.INVALID_CREDENTIALS);
+    })
+    .catch(err=> cb(err));
   }
 
-  User.remoteMethod('login', USER_ROUTES.LOGIN)
+  User.remoteMethod('login', common.router('/login', 'post', 'data'));
   User.beforeRemote('login', (context, user, next)=>{
-    var userData = context.req.body;
-    VALIDATOR.LOGIN(userData, (err, success)=>{
-      if(err)
-        next(err)
-      else
-        next();
-    })
+    let { email, password } = context.req.body;
+    let err = common.validation({ email, password})
+    if(err)
+      next(err);
+    else
+      next();
   });
 
 

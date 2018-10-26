@@ -1,10 +1,15 @@
 const bcrypt = require('bcrypt')
-const CONSANT = require('./constant');
+const constant = require('./constant');
+let router = {
+    http:{  },
+    accepts:{  },
+    returns:{ arg:"data", type:"object" }
+}
 
 module.exports = {
     
     createHash:(password, cb)=>{
-        bcrypt.genSalt(CONSANT.SALT_ROUNDS, (err, salt)=>{
+        bcrypt.genSalt(constant.SALT_ROUNDS, (err, salt)=>{
             bcrypt.hash(password, salt, (err, hash)=>{
                 if(err)
                     cb(err)
@@ -21,5 +26,22 @@ module.exports = {
             else
                 cb(null, match)
         })
+    },
+
+    validation:(object)=>{
+        for(var key in object)
+            if(!object[key])
+                return {
+                    message:`${key} can't be blank.`
+                }
+    },
+
+    router:(path, verb, arg)=>{
+        router.http = { path:path, verb:verb };
+        if(verb == 'get')
+            router['accepts'] = { arg:arg, type:'string', http:{ source:'query' } }
+        else
+            router['accepts'] = { arg:'data', type:'object', http:{ source:'body' } }
+        return router;    
     }
 }
