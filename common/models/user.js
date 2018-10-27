@@ -1,7 +1,6 @@
 'use strict';
 const common = require('../common');
 const constant = require('../constant');
-
 module.exports = (User) => {
   // 1st API for Signup
   User.signup = (userData, cb)=>{
@@ -14,14 +13,7 @@ module.exports = (User) => {
   }
 
   User.remoteMethod('signup', common.router('/signup', 'post', 'data'));
-  User.beforeRemote('signup', (context, user, next)=>{
-    let { name, email, password } = context.req.body;
-    var err = common.validation({ name, email, password })
-    if(err)
-      next(err)
-    else
-      next();
-  })  
+  User.beforeRemote('signup',(context, user, next)=>common.beforeRemote(context, ['name','email','password'], next));
 
   // 2rd API for send OTP
   User.sendOTP = (email, cb) => {
@@ -43,14 +35,7 @@ module.exports = (User) => {
   }
  
   User.remoteMethod('sendOTP', common.router('/sendOTP', 'get', 'email'));
-  User.beforeRemote('sendOTP', (context, user, next)=>{
-    let { email } = context.req.query;
-    let err = common.validation({ email });
-    if(err)
-      next(err);
-    else
-      next();
-  })
+  User.beforeRemote('sendOTP',(context, user, next)=>common.beforeRemote(context, ['email'], next));
 
   // 3th API for Verify OTP
   User.verifyOTP = (userData, cb) => {
@@ -79,14 +64,7 @@ module.exports = (User) => {
   }
   
   User.remoteMethod('verifyOTP',  common.router('/verifyOTP', 'post', 'data'))
-  User.beforeRemote('verifyOTP', (context, user, next)=>{
-    let { email, OTP } = context.req.body;
-    let err = common.validation({ email, OTP })
-    if(err)
-      next(err);
-    else
-      next();
-  })
+  User.beforeRemote('verifyOTP',(context, user, next)=>common.beforeRemote(context, ['email', 'OTP'], next));
 
 
   // 4th API for User Detail
@@ -105,14 +83,7 @@ module.exports = (User) => {
   }
 
   User.remoteMethod('getUser',  common.router('/getUser', 'get', 'id'))
-  User.beforeRemote('getUser', (context, user, next)=>{
-    let { id } = context.req.query;
-    let err = common.validation({ id })
-    if(err)
-      next(err);
-    else
-      next();
-  })
+  User.beforeRemote('getUser', (context, user, next)=>common.beforeRemote(context, ['id'], next));
 
 
   // 5th API for get ALl User list
@@ -146,14 +117,7 @@ module.exports = (User) => {
   }
   
   User.remoteMethod('deleteUser', common.router('/deleteUser', 'get', 'id'))
-  User.beforeRemote('deleteUser', (context, user, next)=>{
-    let { id } = context.req.query;
-    let err = common.validation({ id })
-    if(err)
-      next(err);
-    else
-      next();
-  })
+  User.beforeRemote('deleteUser',(context, user, next)=>common.beforeRemote(context, ['id'], next));
 
 
   // 7th API for edit User Profile
@@ -170,14 +134,7 @@ module.exports = (User) => {
   }
   
   User.remoteMethod('editUser', common.router('/editUser', 'post', 'data'))
-  User.beforeRemote('editUser', (context, user, next)=>{
-    let { id, name } = context.req.body;
-    let err = common.validation({ id, name })
-    if(err)
-      next(err)
-    else
-      next()
-  })
+  User.beforeRemote('editUser',(context, user, next)=>common.beforeRemote(context, ['id','name'], next));
 
 
   // 8th API for resetPassword Password
@@ -214,14 +171,7 @@ module.exports = (User) => {
   }
 
   User.remoteMethod('resetPassword', common.router('/resetPassword', 'post', 'data'))
-  User.beforeRemote('resetPassword', (context, user, next)=>{
-    let { email, password, newPassword } = context.req.body;
-    let err = common.validation({ email, password, newPassword })
-    if(err)
-      next(err)
-    else
-      next()
-  })
+  User.beforeRemote('resetPassword',(context, user, next)=>common.beforeRemote(context, ['email','password','newPassword'], next));
 
 
   // 9th API for Login
@@ -254,17 +204,7 @@ module.exports = (User) => {
     })
     .catch(err=> cb(err));
   }
-
   User.remoteMethod('login', common.router('/login', 'post', 'data'));
-  User.beforeRemote('login', (context, user, next)=>{
-    let { email, password } = context.req.body;
-    let err = common.validation({ email, password})
-    if(err)
-      next(err);
-    else
-      next();
-  });
-
-
+  User.beforeRemote('login',(context, user, next)=>common.beforeRemote(context, ['email','password'], next));
 
 }
