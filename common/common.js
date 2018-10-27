@@ -1,7 +1,7 @@
-const bcrypt = require('bcrypt')
-const constant = require('./constant');
-const common = require('./common');
-const _ = require('lodash');
+const bcrypt = require('bcrypt'),
+      constant = require('./constant'),
+      common = require('./common'),
+      _ = require('lodash');
 let route = {
     http:{  },
     accepts:{  },
