@@ -50,12 +50,8 @@ const beforeRemote = (context, parameter, next)=>{
     else
         reqParameter = context.req.query;
     parameter.map((x)=>{
-        if(!reqParameter[x])
-            body[x] = ""
-        else
-            body[x] = reqParameter[x]   
+        body[x] = reqParameter[x]   
     })
-    console.log("body====>>>>",body)
     err = validation(body)
     if(err)
         next(err);
