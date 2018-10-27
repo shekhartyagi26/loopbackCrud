@@ -6,10 +6,12 @@ module.exports = (User) => {
 
   // 1st API for Signup
   User.signup = (userData, cb)=>{
-    new User(userData)
-    .save()
-    .then(user=> cb(null, user))
-    .catch(err=> cb(err));
+    User.create(userData, (err, user)=>{
+      if(err)
+        cb(err)
+      else
+        cb(null, user)
+    })
   }
 
   User.remoteMethod('signup', common.router('/signup', 'post', 'data'));
