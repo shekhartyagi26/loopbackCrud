@@ -1,5 +1,4 @@
 'use strict';
-// PersistedModel
 const common = require('../common');
 const constant = require('../constant');
 
@@ -13,7 +12,15 @@ module.exports = (User) => {
     .catch(err=> cb(err));
   }
 
-  User.remoteMethod('signup', common.router('/signup', 'post', 'data'));  
+  User.remoteMethod('signup', common.router('/signup', 'post', 'data'));
+  User.beforeRemote('signup', (context, user, next)=>{
+    let { name, email, password } = context.req.body;
+    var err = common.validation({ name, email, password })
+    if(err)
+      next(err)
+    else
+      next();
+  })  
 
   // 2rd API for send OTP
   User.sendOTP = (email, cb) => {
