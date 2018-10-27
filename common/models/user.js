@@ -3,7 +3,7 @@ const common = require('../common');
 const constant = require('../constant');
 
 module.exports = (User) => {
-
+// console.log("dfghjk")
   // 1st API for Signup
   User.signup = (userData, cb)=>{
     User.create(userData, (err, user)=>{
