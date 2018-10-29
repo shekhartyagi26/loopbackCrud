@@ -2,7 +2,7 @@
 const common = require('../common');
 const userApi = require('./userAPI');
 module.exports = (User) => {
-  
+
   // 1st API for Signup
   User.signup = (userData, cb)=>{
     userApi.signup(User, userData, (err, user)=>{
