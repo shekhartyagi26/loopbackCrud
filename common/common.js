@@ -11,36 +11,36 @@ const createHash = (password, cb)=>{
     bcrypt.genSalt(constant.SALT_ROUNDS, (err, salt)=>{
         bcrypt.hash(password, salt, (err, hash)=>{
             if(err)
-                cb(err)
+                cb(err);
             else
-                cb(null, hash)
+                cb(null, hash);
         });
     });
-}
+};
 
 const hashCompare = (oldPassword, dbPassword, cb)=>{
     bcrypt.compare(oldPassword, dbPassword, (err, match)=>{
         if(err)
-            cb(err)
+            cb(err);
         else
-            cb(null, match)
-    })
-}
+            cb(null, match);
+    });
+};
 
 const validation = (object)=>{
     for(var key in object)
         if(!object[key])
             return `${key} can't be blank.`;
-}
+};
 
 const router = (path, verb, arg)=>{
     route.http = { path:path, verb:verb };
     if(verb == 'get')
-        route['accepts'] = { arg:arg, type:'string', http:{ source:'query' } }
+        route['accepts'] = { arg:arg, type:'string', http:{ source:'query' } };
     else
-        route['accepts'] = { arg:'data', type:'object', http:{ source:'body' } }
+        route['accepts'] = { arg:'data', type:'object', http:{ source:'body' } };
     return route;    
-}
+};
 
 const beforeRemote = (context, parameter, next)=>{
 
@@ -49,14 +49,14 @@ const beforeRemote = (context, parameter, next)=>{
     else
         reqParameter = context.req.query;
     parameter.map((x)=>{
-        body[x] = reqParameter[x]   
-    })
+        body[x] = reqParameter[x];   
+    });
     err = validation(body)
     if(err)
         next(err);
     else
         next();
-}
+};
 
 module.exports = {
 
@@ -65,4 +65,4 @@ module.exports = {
     validation,
     router,
     beforeRemote
-}
+};
