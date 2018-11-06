@@ -11,6 +11,6 @@
 
   ### Prepare the app In this step, you will deploy your first nodejs application in you system . To clone the sample application so that you have a local version of the code that you can run on your local system, execute the following commands in your local command shell or terminal: 
 
-  ####git clone https://github.com/shekhartyagi26/loopbackCrud.git
+  #### git clone https://github.com/shekhartyagi26/loopbackCrud.git
 
-  ####cd loopbackCrud
+  #### cd loopbackCrud
