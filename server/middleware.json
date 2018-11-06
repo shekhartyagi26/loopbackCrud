@@ -1,50 +1,74 @@
 {
-  "initial:before": {
-    "loopback#favicon": {}
+  "initial:before":
+  {
+    "loopback#favicon":
+    {}
   },
-  "initial": {
-    "compression": {},
-    "cors": {
-      "params": {
+  "initial":
+  {
+    "compression":
+    {},
+    "cors":
+    {
+      "params":
+      {
         "origin": true,
         "credentials": true,
         "maxAge": 86400
       }
     },
-    "helmet#xssFilter": {},
-    "helmet#frameguard": {
+    "helmet#xssFilter":
+    {},
+    "helmet#frameguard":
+    {
       "params": [
         "deny"
       ]
     },
-    "helmet#hsts": {
-      "params": {
+    "helmet#hsts":
+    {
+      "params":
+      {
         "maxAge": 0,
         "includeSubdomains": true
       }
     },
-    "helmet#hidePoweredBy": {},
-    "helmet#ieNoOpen": {},
-    "helmet#noSniff": {},
-    "helmet#noCache": {
+    "helmet#hidePoweredBy":
+    {},
+    "helmet#ieNoOpen":
+    {},
+    "helmet#noSniff":
+    {},
+    "helmet#noCache":
+    {
       "enabled": false
     }
   },
-  "session": {},
-  "auth": {},
-  "parse": {},
-  "routes": {
-    "loopback#rest": {
+  "session":
+  {},
+  "auth":
+  {},
+  "parse":
+  {},
+  "routes":
+  {
+    "loopback#rest":
+    {
       "paths": [
         "${restApiRoot}"
       ]
     }
   },
-  "files": {},
-  "final": {
-    "loopback#urlNotFound": {}
+  "files":
+  {},
+  "final":
+  {
+    "loopback#urlNotFound":
+    {}
   },
-  "final:after": {
-    "strong-error-handler": {}
+  "final:after":
+  {
+    "strong-error-handler":
+    {}
   }
 }

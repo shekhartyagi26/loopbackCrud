@@ -2,32 +2,41 @@
   "name": "user",
   "base": "User",
   "idInjection": true,
-  "options": {
+  "options":
+  {
     "validateUpsert": true
   },
-  "properties": {
-    "name": {
+  "properties":
+  {
+    "name":
+    {
       "type": "string",
       "required": true
     },
-    "status":{
-      "type":"string",
-      "default":"INACTIVE"
+    "status":
+    {
+      "type": "string",
+      "default": "INACTIVE"
     },
-    "email":{
-      "type":"string",
-      "required":true
+    "email":
+    {
+      "type": "string",
+      "required": true
     },
-    "password":{
-      "type":"string",
-      "required":true
+    "password":
+    {
+      "type": "string",
+      "required": true
     },
-    "OTP":{
-      "type":"number"
+    "OTP":
+    {
+      "type": "number"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations":
+  {},
   "acls": [],
-  "methods": {}
+  "methods":
+  {}
 }

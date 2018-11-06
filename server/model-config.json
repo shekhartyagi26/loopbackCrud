@@ -1,5 +1,6 @@
 {
-  "_meta": {
+  "_meta":
+  {
     "sources": [
       "loopback/common/models",
       "loopback/server/models",
@@ -13,7 +14,8 @@
       "./mixins"
     ]
   },
-  "user": {
+  "user":
+  {
     "dataSource": "mongoDS",
     "public": true
   }

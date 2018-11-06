@@ -2,18 +2,22 @@
   "restApiRoot": "/api",
   "host": "0.0.0.0",
   "port": 3000,
-  "remoting": {
+  "remoting":
+  {
     "context": false,
-    "rest": {
+    "rest":
+    {
       "handleErrors": false,
       "normalizeHttpPath": false,
       "xml": false
     },
-    "json": {
+    "json":
+    {
       "strict": false,
       "limit": "100kb"
     },
-    "urlencoded": {
+    "urlencoded":
+    {
       "extended": true,
       "limit": "100kb"
     },
